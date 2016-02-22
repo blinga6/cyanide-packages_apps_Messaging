@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical">
 
-            <com.android.messaging.ui.conversation.MessageBubbleBackground
+            <com.cyanogenmod.messaging.ui.QMessageBubbleBackground
                 android:id="@+id/message_text_and_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                     android:maxHeight="@dimen/qm_received_msg_max_height"
                     android:importantForAccessibility="no" />
 
-            </com.android.messaging.ui.conversation.MessageBubbleBackground>
+            </com.cyanogenmod.messaging.ui.QMessageBubbleBackground>
 
         </com.android.messaging.ui.conversation.ConversationMessageBubbleView>
 
