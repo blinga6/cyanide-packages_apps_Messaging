@@ -54,6 +54,7 @@ public class BlacklistSync extends AsyncTask<Void, Void, Void> {
         if (cursor != null && cursor.getCount() > 0) {
             int normalizedNumberIndex = cursor.getColumnIndex("normalized_number");
             int blockedIndex = cursor.getColumnIndex("message");
+            int favCalBlockedIndex = cursor.getColumnIndex("phone");
             int updateCount;
             if (normalizedNumberIndex < 0 || blockedIndex < 0) {
                 cursor.close();
@@ -85,6 +86,17 @@ public class BlacklistSync extends AsyncTask<Void, Void, Void> {
                         db.setTransactionSuccessful();
                     } finally {
                         db.endTransaction();
+                    }
+                }
+                String favCalBlocked = cursor.getString(favCalBlockedIndex);
+                boolean isFavCalBlocked = favCalBlocked.compareTo("1") == 0;
+                String lookupKey = BugleDatabaseOperations
+                        .getLookUpFromOtherParticipantDestination(db, number);
+
+                if (lookupKey != null) {
+                    Uri lookupUri = Uri.parse(BugleDatabaseOperations.lookUpUri + lookupKey);
+                    if (isFavCalBlocked) {
+                        BugleDatabaseOperations.setUnStarred(lookupUri, !isFavCalBlocked);
                     }
                 }
             }

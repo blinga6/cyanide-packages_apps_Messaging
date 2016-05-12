@@ -63,7 +63,7 @@ public class BlacklistObserver extends ContentObserver {
                     cursor = mResolver.query(uri, null, null, null, null);
                     int normalizedNumberIndex = cursor.getColumnIndex("normalized_number");
                     int blockedIndex = cursor.getColumnIndex("message");
-
+                    int favCalBlockedIndex = cursor.getColumnIndex("phone");
                     // if the column indices are not valid, don't perform the queries
                     if (normalizedNumberIndex < 0 || blockedIndex < 0) {
                         if (cursor != null) {
@@ -119,7 +119,17 @@ public class BlacklistObserver extends ContentObserver {
                             }
                             MessagingContentProvider.notifyParticipantsChanged(conversationId);
                         }
+                        String favCalBlocked = cursor.getString(favCalBlockedIndex);
+                        boolean isFavCalBlocked = favCalBlocked.compareTo("1") == 0;
+                        String lookupKey = BugleDatabaseOperations
+                                .getLookUpFromOtherParticipantDestination(db, number);
 
+                        if (lookupKey != null) {
+                            Uri lookupUri = Uri.parse(BugleDatabaseOperations.lookUpUri + lookupKey);
+                            if (isFavCalBlocked) {
+                                BugleDatabaseOperations.setUnStarred(lookupUri, !isFavCalBlocked);
+                            }
+                        }
                         if (blockedNumberDeleted) {
                             break;
                         }
